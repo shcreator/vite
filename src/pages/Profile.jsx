@@ -1,18 +1,37 @@
 // src/pages/Profile.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
-function Profile() {
+const Profile = () => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const docRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUserData(docSnap.data());
+      }
+    };
+    fetchUserData();
+  }, []);
+
   return (
-    <section className="py-12">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Profile</h2>
-        <p className="text-gray-600">
-          This is your profile page. You can view and edit your information here.
-        </p>
-        {/* Add profile information and editing functionality here */}
-      </div>
-    </section>
+    <div className="container mx-auto py-12">
+      {userData ? (
+        <>
+          <h1 className="text-4xl font-bold mb-4">User Profile</h1>
+          <p>Name: {userData.name}</p>
+          <p>Email: {userData.email}</p>
+          <p>Wallet Balance: ${userData.balance}</p>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </div>
   );
-}
+};
 
 export default Profile;
