@@ -12,25 +12,14 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from './firebase';
 
 function App() {
+  const [user] = useAuthState(auth);
+
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar user={user} />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/templates" element={<Templates />} />
-        <Route path="/templates/:id" element={<TemplateDetails />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
-  );
-}
-
-export default App;
+        
